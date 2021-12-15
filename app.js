@@ -1,7 +1,5 @@
 /*
-proyecto Pasapalabra-html
-Berenguer Pou
-precourse ISDI Coders 2022-1
+proyecto Pasapalabra-html / Berenguer Pou / precourse ISDI Coders 2022-1
 */
 
 const questionsSpanish = [
@@ -409,7 +407,6 @@ const questionsSpanish = [
     ],
   },
 ];
-
 const _mockrankings = [
   { name: "Abramov", score: 25 },
   { name: "Fowler", score: 23 },
@@ -419,7 +416,6 @@ const _mockrankings = [
   { name: "Simmons", score: 12 },
   { name: "K.J.Henry", score: 15 },
 ];
-
 const audioPasapalabra = new Audio("./assets/pasapalabra.mp3");
 const audioCorrect = new Audio("./assets/correct.mp3");
 const audioError = new Audio("./assets/error.mp3");
@@ -603,7 +599,7 @@ class Game {
     clearInterval(this.countdown);
   }
 }
-
+// listeners to attach to keydown event of game.inputEl element
 const listenAnswerInput = (e) => {
   switch (e.code) {
     case "Enter":
@@ -617,11 +613,20 @@ const listenAnswerInput = (e) => {
       break;
   }
 };
-
 const listenUsernameInput = (e) => {
   if (e.code === "Enter") game.checkUsername(game.inputEl.value.trim());
 };
-
+// helper functions to manipulate DOM elements, generate rankings and add/remove css classes programatically
+const renderGameStateUI = (gameState) => {
+  const gameStateModiifiers = ["start", "rules", "play", "ranking", "end"];
+  const mainDomElements = document.getElementsByTagName("main")[0].children;
+  Array.from(mainDomElements).forEach((element) => {
+    const classesToRemove = gameStateModiifiers
+      .filter((gameStateModifier) => gameState !== gameStateModifier)
+      .map((classModifier) => `${element.classList[0]}--${classModifier}`);
+    setElementStyle(element.id, [`${element.classList[0]}--${gameState}`], classesToRemove);
+  });
+};
 const getRanking = (userName, score, gameId, currentRanking) => {
   if (score !== null) {
     currentRanking.push({
@@ -635,7 +640,6 @@ const getRanking = (userName, score, gameId, currentRanking) => {
     .map((player, i) => ({ rank: i + 1, ...player }));
   return updatedRanking;
 };
-
 const renderRanking = (ranking) => {
   const rankingTable = document.createElement("table");
   const rankingWrapperElement = document.getElementById("ranking-table");
@@ -659,7 +663,6 @@ const renderRanking = (ranking) => {
   rankingWrapperElement.textContent = "";
   rankingWrapperElement.appendChild(rankingTable);
 };
-
 const setElementStyle = (elementId, classesToAdd, classesToRemove = null) => {
   const element = document.getElementById(elementId);
   if (element) {
@@ -667,12 +670,6 @@ const setElementStyle = (elementId, classesToAdd, classesToRemove = null) => {
     element.classList.add(...classesToAdd);
   }
 };
-
-const triggerFX = (element, cssClass, removeAfterMs) => {
-  element.classList.add(...cssClass);
-  setTimeout(() => element.classList.remove(...cssClass), removeAfterMs);
-};
-
 const resetLettersStyle = () => {
   Array.from(document.getElementsByClassName("rosco__letter")).forEach((element) =>
     element.classList.remove(
@@ -683,18 +680,12 @@ const resetLettersStyle = () => {
     )
   );
 };
-
-const renderGameStateUI = (gameState) => {
-  const gameStateModiifiers = ["start", "rules", "play", "ranking", "end"];
-  const mainDomElements = document.getElementsByTagName("main")[0].children;
-  Array.from(mainDomElements).forEach((element) => {
-    const classesToRemove = gameStateModiifiers
-      .filter((gameStateModifier) => gameState !== gameStateModifier)
-      .map((classModifier) => `${element.classList[0]}--${classModifier}`);
-    setElementStyle(element.id, [`${element.classList[0]}--${gameState}`], classesToRemove);
-  });
+const triggerFX = (element, cssClass, removeAfterMs) => {
+  element.classList.add(...cssClass);
+  setTimeout(() => element.classList.remove(...cssClass), removeAfterMs);
 };
 
+// init game
 const game = new Game(
   questionsSpanish,
   "answerInput",
@@ -704,5 +695,4 @@ const game = new Game(
   "gameId",
   "hits"
 );
-
 game.setGameState("start");
