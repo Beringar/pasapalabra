@@ -375,7 +375,7 @@ main {
   color: white;
   cursor: pointer;
   font-family: inherit;
-  width: 60%;
+  max-width: 60%;
 }
 
 .answer-input--start {
