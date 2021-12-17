@@ -644,7 +644,7 @@ const renderRanking = (ranking) => {
   const rankingTable = document.createElement("table");
   const rankingWrapperElement = document.getElementById("ranking-table");
   const headerRow = rankingTable.insertRow();
-  headerRow.innerHTML = "<th>rank</th><th>player</th><th>words</th>";
+  headerRow.innerHTML = "<th>posición</th><th>nombre</th><th>palabras</th>";
   ranking.forEach((user) => {
     const { rank, name, score } = user;
     const rankCell = document.createElement("td");
