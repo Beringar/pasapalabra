@@ -422,6 +422,7 @@ const audioError = new Audio("./assets/error.mp3");
 const audioNewGame = new Audio("./assets/startgame.mp3");
 const audioEndByUser = new Audio("./assets/endbyuser.mp3");
 const audioEndGame = new Audio("./assets/endgame.mp3");
+const audioTenSecs = new Audio("./assets/tensecs.mp3");
 const audioEndTime = new Audio("./assets/endtime.mp3");
 
 class Game {
@@ -435,12 +436,12 @@ class Game {
     hitsWrapper
   ) {
     this.questionSet = questionSet;
-    this.inputEl = document.getElementById(inputId);
-    this.messageEl = document.getElementById(messageWrapperId);
-    this.errorEl = document.getElementById(errorWrapperId);
-    this.playerNameEl = document.getElementById(playerNameWrapperId);
-    this.gameIdEl = document.getElementById(gameIdWrapperId);
-    this.hitsEl = document.getElementById(hitsWrapper);
+    this.inputEl = document.querySelector(`#${inputId}`);
+    this.messageEl = document.querySelector(`#${messageWrapperId}`);
+    this.errorEl = document.querySelector(`#${errorWrapperId}`);
+    this.playerNameEl = document.querySelector(`#${playerNameWrapperId}`);
+    this.gameIdEl = document.querySelector(`#${gameIdWrapperId}`);
+    this.hitsEl = document.querySelector(`#${hitsWrapper}`);
   }
 
   resetRosco() {
@@ -479,8 +480,8 @@ class Game {
         break;
       case "rules":
         this.inputEl.onkeydown = null;
-        document.getElementById(
-          "rulesHeader"
+        document.querySelector(
+          "#rulesHeader"
         ).innerText = `👋 Hola ${this.playerName}!\naquí puedes ver la Reglas del Juego:`;
         break;
       case "ranking":
@@ -586,10 +587,14 @@ class Game {
     let seconds = this.countdownSeconds;
     this.countdown = setInterval(() => {
       seconds--;
-      document.getElementById("countdown").textContent = seconds;
+      document.querySelector("#countdown").textContent = seconds;
+      if (seconds === 10) {
+        audioTenSecs.play();
+        triggerFX(document.querySelector("#countdown"), ["stats__countdown--tenSecs"], 10000);
+      }
       if (seconds === 0) {
         audioEndTime.play();
-        clearInterval(this.countdown);
+        this.clearCountDown();
         this.showFinalScores(true);
       }
     }, 1000);
@@ -618,10 +623,10 @@ const listenUsernameInput = (e) => {
 };
 // helper functions to manipulate DOM elements, generate rankings and add/remove css classes programatically
 const renderGameStateUI = (gameState) => {
-  const gameStateModiifiers = ["start", "rules", "play", "ranking", "end"];
-  const mainDomElements = document.getElementsByTagName("main")[0].children;
+  const gameStateModifiers = ["start", "rules", "play", "ranking", "end"];
+  const mainDomElements = document.querySelector("main").children;
   Array.from(mainDomElements).forEach((element) => {
-    const classesToRemove = gameStateModiifiers
+    const classesToRemove = gameStateModifiers
       .filter((gameStateModifier) => gameState !== gameStateModifier)
       .map((classModifier) => `${element.classList[0]}--${classModifier}`);
     setElementStyle(element.id, [`${element.classList[0]}--${gameState}`], classesToRemove);
@@ -642,7 +647,7 @@ const getRanking = (userName, score, gameId, currentRanking) => {
 };
 const renderRanking = (ranking) => {
   const rankingTable = document.createElement("table");
-  const rankingWrapperElement = document.getElementById("ranking-table");
+  const rankingWrapperElement = document.querySelector("#ranking-table");
   const headerRow = rankingTable.insertRow();
   headerRow.innerHTML = "<th>posición</th><th>nombre</th><th>palabras</th>";
   ranking.forEach((user) => {
@@ -664,14 +669,14 @@ const renderRanking = (ranking) => {
   rankingWrapperElement.appendChild(rankingTable);
 };
 const setElementStyle = (elementId, classesToAdd, classesToRemove = null) => {
-  const element = document.getElementById(elementId);
+  const element = document.querySelector(`#${elementId}`);
   if (element) {
     if (classesToRemove) element.classList.remove(...classesToRemove);
     element.classList.add(...classesToAdd);
   }
 };
 const resetLettersStyle = () => {
-  Array.from(document.getElementsByClassName("rosco__letter")).forEach((element) =>
+  Array.from(document.querySelectorAll(".rosco__letter")).forEach((element) =>
     element.classList.remove(
       "rosco__letter--current",
       "rosco__letter--correct",
@@ -680,9 +685,9 @@ const resetLettersStyle = () => {
     )
   );
 };
-const triggerFX = (element, cssClass, removeAfterMs) => {
-  element.classList.add(...cssClass);
-  setTimeout(() => element.classList.remove(...cssClass), removeAfterMs);
+const triggerFX = (element, cssClasses, removeAfterMs) => {
+  element.classList.add(...cssClasses);
+  setTimeout(() => element.classList.remove(...cssClasses), removeAfterMs);
 };
 
 // init game

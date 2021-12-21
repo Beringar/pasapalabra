@@ -91,6 +91,16 @@ main {
   font-size: 1.4em;
   background-color: #002768;
   margin: 10px auto;
+  transition: all 0.5s ease-in-out;
+}
+
+.stats__countdown--tenSecs {
+  width: 80px;
+  height: 80px;
+  line-height: 80px;
+  color: #ffffff;
+  font-size: 2em;
+  background-color: red;
 }
 
 .stats__hits {
