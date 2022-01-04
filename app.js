@@ -604,7 +604,7 @@ class Game {
     clearInterval(this.countdown);
   }
 }
-// listeners to attach to keydown event of game.inputEl element
+
 const listenAnswerInput = (e) => {
   switch (e.code) {
     case "Enter":
@@ -675,6 +675,7 @@ const setElementStyle = (elementId, classesToAdd, classesToRemove = null) => {
     element.classList.add(...classesToAdd);
   }
 };
+
 const resetLettersStyle = () => {
   Array.from(document.querySelectorAll(".rosco__letter")).forEach((element) =>
     element.classList.remove(
